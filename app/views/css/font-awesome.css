@@ -1,0 +1,131 @@
+/*!
+ *  Font Awesome 4.3.0 by @davegandy - http://fontawesome.io - @fontawesome
+ *  License - http://fontawesome.io/license (Font: SIL OFL 1.1, CSS: MIT License)
+ */
+/* FONT PATH
+ * -------------------------- */
+@font-face {
+	  font-family: 'FontAwesome-thor';
+	  src: url('../fonts/fontawesome-webfont.eot?v=4.3.0');
+	  src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.3.0') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.3.0') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.3.0') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular') format('svg');
+	  font-weight: normal;
+	  font-style: normal;
+}
+.fa-thor {
+	  display: inline-block;
+	  font: normal normal normal 14px/1 FontAwesome-thor;
+	  font-size: inherit;
+	  text-rendering: auto;
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;
+	  transform: translate(0, 0);
+}
+.fa-thor-menu{
+	font-size: 30px;
+	display: block;
+	margin-bottom: 5px;
+}
+.fa-general_settings-thor:before {
+	content: "\f013";
+}
+.fa-device-thor:before {
+  content: "\f10b";
+}
+
+.fa-message-thor:before {
+  	content: "\f298";
+}
+.fa-dashboard-thor:before {
+  	content: "\f0e4";
+}
+.fa-help-thor:before {
+  	content: "\f059";
+}
+.fa-logs-thor:before {
+  	content: "\f03a";
+}
+.fa-restore-thor:before {
+  	content: "\f07d";
+    content: "\f0ee";
+}
+.fa-files-thor:before {
+  content: "\f15b";
+}
+.fa-db-thor:before {
+   content: "\f1c0";
+}
+.fa-scheduled-thor:before {
+   content: "\f017";
+}
+.fa-periodically-thor:before {
+  content: "\f1da";
+}
+.fa-add-backup-thor:before {
+  content: "\f0ed";
+}
+.fa-info-circle-thor:before {
+  content: "\f05a";
+}
+.fa-check-circle-bk:before {
+  content: "\f058";
+}
+.fa-error-circle-bk:before {
+	  content: "\f06a";
+}
+.fa-stopped-circle-bk:before {
+	content: "\f071";
+}
+.fa-folder-thor:before {
+  content: "\f07b";
+}
+.fa-theme-thor:before {
+  content: "\f009";
+}
+.fa-stats-shanp-thor:before {
+    content: "\f01c";
+}
+.fa-plugin-thor:before {
+  content: "\f219";
+}
+.fa-uploads-thor:before {
+    content: "\f03e";
+}
+.fa-restore-btn-thor:before {
+    content: "\f0ee";
+}
+.fa-support-btn-thor:before {
+    content: "\f1cd";
+}
+.fa-hireus-btn-thor:before {
+    content: "\f2b9";
+}
+.fa-pluginsthemes-btn-thor:before {
+    content: "\f19a";
+}
+.fa-migrate-btn-thor:before  {
+  content: "\f079";
+}
+.fa-migrate-thor:before  {
+  content: "\f079";
+}
+.fa-cloud-thor:before {
+    content: "\f1cc";
+}
+.fa-version-thor:before{
+	content: "\f00c";
+}
+.fa-download-thor:before{
+	content: "\f019";
+}
+.fa-close-thor:before {
+    content: "\f0d7";
+}
+.fa-support-thor:before{
+  content: "\f1cd";
+}
+.fa-hireus-thor:before{
+  content: "\f1c9";
+}
+.fa-pluginsthemes-thor:before {
+    content: "\f19a";
+}
