@@ -18,8 +18,8 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			add_action('admin_menu', array($this, 'thor_heartbeat_admin_menu'));
 			add_action('admin_init', array($this, 'thor_heartbeat_settings_init'));
 
-			add_action('wpmu_new_blog',  array($this, 'thor_on_new_blog', 10, 6)); 		
-			add_action('activate_blog',  array($this, 'thor_on_new_blog', 10, 6));
+			add_action('wpmu_new_blog',  array($this, 'thor_on_new_blog'), 10, 6); 		
+			add_action('activate_blog',  array($this, 'thor_on_new_blog'), 10, 6);
 			
 			add_action('admin_enqueue_scripts', array($this, 'thor_heartbeat_head') );
 			
@@ -277,7 +277,6 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			add_settings_field( 'thor_heartbeat_location',  __('Location', 'thor_heartbeat'), array( $this, 'thor_heartbeat_location' ), 'thor-heartbeat-settings', 'thor_heartbeat_settings_section' );
 
 			add_settings_field('thor_heartbeat_frequency', __('Frequency', 'thor_heartbeat'), array( $this, 'thor_heartbeat_frequency' ), 'thor-heartbeat-settings', 'thor_heartbeat_settings_section');
-
 		}
 
 		/**
@@ -325,7 +324,6 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 * @return void
 		 */	
 		function thor_heartbeat_frequency() { 
-
 
 			$options = get_option('thor_heartbeat_settings');
 
