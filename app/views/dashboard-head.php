@@ -4,7 +4,7 @@
 			<div class="thor-dashboard-logo">
 				<div class="thor-dashboard-text text-center">
 					<a href="<?php echo $url.'&tab=dashboard';?>">
-						<img src="<?php echo THORHEARTBEAT_PLUGIN_URL;?>/app/views/images/wpthorfcm-logo.jpg"/>
+						<img src="<?php echo THORHEARTBEAT_PLUGIN_URL;?>/app/views/images/wp-thor-logo.png"/>
 					</a>
 				</div>
 			</div>

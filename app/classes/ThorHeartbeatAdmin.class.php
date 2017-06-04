@@ -18,38 +18,36 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			add_action('admin_menu', array($this, 'thor_heartbeat_admin_menu'));
 			add_action('admin_init', array($this, 'thor_heartbeat_settings_init'));
 
-			add_action('wpmu_new_blog',  array($this, 'thor_on_new_blog'), 10, 6); 		
-			add_action('activate_blog',  array($this, 'thor_on_new_blog'), 10, 6);
+			add_action('wpmu_new_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6); 		
+			add_action('activate_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6);
 			
 			add_action('admin_enqueue_scripts', array($this, 'thor_heartbeat_head') );
 			
 			add_action('plugins_loaded', array($this, 'thor_heartbeat_load_textdomain'));
 
-			add_action('add_meta_boxes', array($this, 'thor_heartbeat_add_metabox'));
+			$options = get_option('thor_heartbeat_settings');
 
-			$heartbeat_location  = get_option('heartbeat_location');
-			$heartbeat_frequency = get_option('heartbeat_frequency');
+			$heartbeat_location  = $options['thor_heartbeat_location'];
+			$heartbeat_frequency = $options['thor_heartbeat_frequency'];
 
 			if ( $heartbeat_location == 'disable-heartbeat-everywhere') {
-				add_action( 'init', 'stop_heartbeat', 1 );
+				add_action( 'init', 'wp_thor_stop_heartbeat', 1 );
 
-				function stop_heartbeat() {
+				function wp_thor_stop_heartbeat() {
 					wp_deregister_script('heartbeat');
 				}
-
 			} elseif ($heartbeat_location == 'disable-heartbeat-dashboard') {
-				add_action( 'init', 'stop_heartbeat', 1 );
-				function stop_heartbeat() {
+				add_action( 'init', 'wp_thor_stop_heartbeat', 1 );
+				function wp_thor_stop_heartbeat() {
 					global $pagenow;
 
 					if ( $pagenow == 'index.php'  )
 						wp_deregister_script('heartbeat');
 				}
-
 			} elseif ($heartbeat_location == 'allow-heartbeat-post-edit') {
 
-				add_action( 'init', 'stop_heartbeat', 1 );
-				function stop_heartbeat() {
+				add_action( 'init', 'wp_thor_stop_heartbeat', 1 );
+				function wp_thor_stop_heartbeat() {
 					global $pagenow;
 
 					if ( $pagenow != 'post.php' && $pagenow != 'post-new.php' )
@@ -66,7 +64,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 				add_filter( 'heartbeat_settings', 'heartbeat_frequency' );
 			}
 
-			add_filter('admin_footer_text', array($this, 'heartbeat_admin_footer'));
+			add_filter('admin_footer_text', array($this, 'thor_heartbeat_admin_footer'));
 		}
 
 		/* ***************************** PLUGIN (DE-)ACTIVATION *************************** */
@@ -151,7 +149,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 *
 		 * @param int $blog_id Blog ID.
 		 */
-		function thor_on_new_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
+		function thor_heartbeat_on_new_blog( $blog_id, $user_id, $domain, $path, $site_id, $meta ) {
 
 			global $wpdb;
 
@@ -188,22 +186,12 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 */	
 		public function thor_heartbeat_head(){
 
-			if (isset($_GET['page']) && $_GET['page']=='thor_heartbeat_admin'){
+				wp_enqueue_style( 'thor-heartbeat-admin-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/style.css' );
+				wp_enqueue_style( 'thor-heartbeat-font-awesome', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/font-awesome.css' );
+				wp_enqueue_style( 'thor-heartbeat-bootstrap-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/bootstrap.css' );
+				wp_enqueue_style( 'thor-heartbeat-bootstrap-theme-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/bootstrap-theme.css' );
 
-				wp_enqueue_style( 'thor-admin-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/style.css' );
-				wp_enqueue_style( 'thor-font-awesome', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/font-awesome.css' );
-				wp_enqueue_style( 'thor-bootstrap-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/bootstrap.css' );
-				wp_enqueue_style( 'thor-bootstrap-theme-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/bootstrap-theme.css' );
-
-				wp_enqueue_script('thor_chart', get_theme_file_uri( THORHEARTBEAT_PLUGIN_URL . '/app/views/js/chart.js'));
-				wp_enqueue_script('thor_countUp', get_theme_file_uri( THORHEARTBEAT_PLUGIN_URL . '/app/views/js/countUp.min.js'));
-				wp_enqueue_script( 'thor-bootstrap-js', get_theme_file_uri( THORHEARTBEAT_PLUGIN_URL . '/app/views/js/bootstrap.js' ));
-				wp_enqueue_script( 'thor-jquery-flot-js', get_theme_file_uri( THORHEARTBEAT_PLUGIN_URL . '/app/views/js/jquery.flot.js' ));
-				wp_enqueue_script( 'thor-jquery-flot-pie-js', get_theme_file_uri( THORHEARTBEAT_PLUGIN_URL . '/app/views/js/jquery.flot.pie.js' ));
-
-				wp_localize_script( 'thor-admin-js', 'thor_base_url', get_site_url() );
-				wp_localize_script( 'thor-admin-js', 'thor_admin_url', get_admin_url() . 'admin.php?page=thor_heartbeat_admin' );				
-			}
+				wp_enqueue_script( 'thor-heartbeat-bootstrap-js', THORHEARTBEAT_PLUGIN_URL . '/app/views/js/bootstrap.js' );
 		}
 
 		/**
@@ -214,7 +202,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 * @return void
 		 */	
 		public function thor_heartbeat_admin_menu(){
-			add_menu_page ( 'Heartbeat', 'Heartbeat', 'manage_options', 'thor_heartbeat_admin', array($this, 'thor_heartbeat_admin') );
+			add_menu_page ( 'Thor Heartbeat', 'Thor Heartbeat', 'manage_options', 'thor_heartbeat_admin', array($this, 'thor_heartbeat_admin'), plugins_url( 'wp-thor-heartbeat/app/views/images/wp-thor-heartbeat.png' ), 6 );
 		}
 		
 		/**
@@ -229,7 +217,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			if (isset($_GET['tab'])){
 				$tab = $_GET['tab'];
 			} else {
-				$tab = 'dashboard';
+				$tab = 'general_settings';
 			}
 			
 			//url admin
@@ -274,9 +262,9 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			register_setting('thor-heartbeat-settings', 'thor_heartbeat_settings' );
 			add_settings_section( 'thor_heartbeat_settings_section', '', array( $this, 'thor_heartbeat_settings_section_callback' ), 'thor-heartbeat-settings', 'section_general' );
 			
-			add_settings_field( 'thor_heartbeat_location',  __('Location', 'thor_heartbeat'), array( $this, 'thor_heartbeat_location' ), 'thor-heartbeat-settings', 'thor_heartbeat_settings_section' );
+			add_settings_field( 'thor_heartbeat_location',  __('Location', 'thor_heartbeat'), array( $this, 'thor_heartbeat_location_render' ), 'thor-heartbeat-settings', 'thor_heartbeat_settings_section' );
 
-			add_settings_field('thor_heartbeat_frequency', __('Frequency', 'thor_heartbeat'), array( $this, 'thor_heartbeat_frequency' ), 'thor-heartbeat-settings', 'thor_heartbeat_settings_section');
+			add_settings_field('thor_heartbeat_frequency', __('Frequency', 'thor_heartbeat'), array( $this, 'thor_heartbeat_frequency_render' ), 'thor-heartbeat-settings', 'thor_heartbeat_settings_section');
 		}
 
 		/**
@@ -286,7 +274,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 *
 		 * @return void
 		 */	
-		function thor_heartbeat_location() { 
+		function thor_heartbeat_location_render() { 
 
 			$options = get_option('thor_heartbeat_settings');
 
@@ -323,7 +311,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 *
 		 * @return void
 		 */	
-		function thor_heartbeat_frequency() { 
+		function thor_heartbeat_frequency_render() { 
 
 			$options = get_option('thor_heartbeat_settings');
 
@@ -410,14 +398,14 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 *
 		 * @return void
 		 */
-		function heartbeat_admin_footer() {
+		function thor_heartbeat_admin_footer() {
 			global $pagenow;
 			
 			if ($pagenow == 'admin.php') {
 				$page = $_GET['page'];
 				switch($page) {
 					case 'thor_heartbeat_admin':
-						echo "<div class=\"social-links alignleft\"><i>Created by <a href='http://thunderbeardesign.com'>ThunderBear Design</a></i>				
+						echo "<div class=\"social-links alignleft\"><i>Created by <a href=\"http://thunderbeardesign.com\" target=\"_blank\">ThunderBear Design</a></i>
 						<a href=\"http://twitter.com/tbearmarketing\" class=\"twitter\" target=\"_blank\"><span
 						class=\"dashicons dashicons-twitter\"></span></a>
 						<a href=\"fb.me/thunderbeardesign\" class=\"facebook\"
