@@ -31,10 +31,10 @@ $status  = get_option( 'edd_thor_heartbeat_license_status' );
 									<?php if( $status !== false && $status == 'valid' ) { ?>
 										<span style="color:green;"><?php _e('active'); ?></span>
 										<?php wp_nonce_field( 'edd_thor_heartbeat_nonce', 'edd_thor_heartbeat_nonce' ); ?>
-										<input type="submit" class="button-secondary" name="edd_license_deactivate" value="<?php _e('Deactivate License'); ?>"/>
+										<input type="submit" class="button-secondary" name="edd_thor_heartbeat_license_deactivate" value="<?php _e('Deactivate License'); ?>"/>
 									<?php } else {
 										wp_nonce_field( 'edd_thor_heartbeat_nonce', 'edd_thor_heartbeat_nonce' ); ?>
-										<input type="submit" class="button-secondary" name="edd_thor_heartbeat_license_activate" value="<?php _e('Activate License'); ?>"/>
+										<input type="submit" class="button-secondary" name="edd_thor_heartbeat_thor_heartbeat_license_activate" value="<?php _e('Activate License'); ?>"/>
 									<?php } ?>
 								</td>
 							</tr>

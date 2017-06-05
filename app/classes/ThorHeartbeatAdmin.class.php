@@ -701,7 +701,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		function edd_thor_heartbeat_deactivate_license() {
 
 			// listen for our activate button to be clicked
-			if( isset( $_POST['edd_license_deactivate'] ) ) {
+			if( isset( $_POST['edd_thor_heartbeat_license_deactivate'] ) ) {
 
 				// run a quick security check
 			 	if( ! check_admin_referer( 'edd_thor_heartbeat_nonce', 'edd_thor_heartbeat_nonce' ) )
