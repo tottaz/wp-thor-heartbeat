@@ -18,6 +18,14 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			add_action('admin_menu', array($this, 'thor_heartbeat_admin_menu'));
 			add_action('admin_init', array($this, 'thor_heartbeat_settings_init'));
 
+			// Software Licensing and Updates
+			add_action('admin_init', array($this, 'edd_thor_heartbeat_register_option'));
+
+			// Activate, check or deactivate Licenses
+			add_action('admin_init', array($this, 'edd_thor_heartbeat_activate_license'));
+			add_action('admin_init', array($this, 'edd_thor_heartbeat_deactivate_license'));
+			add_action( 'admin_notices', array($this, 'edd_thor_heartbeat_admin_notices'));
+
 			add_action('wpmu_new_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6); 		
 			add_action('activate_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6);
 			
@@ -136,6 +144,14 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 */
 		function _thor_heartbeat_deactivate() {
 
+		    // Delete Licenses Key
+			delete_option('edd_thor_heartbeat_license_key' );
+			delete_option('edd_thor_heartbeat_license_status' );
+
+			// Delete plugin options
+			delete_option('thor_heartbeat_location' );
+			delete_option('thor_heartbeat_frequency' );		
+
 			do_action( 'thor_heartbeat_deactivate' );
 		}
 
@@ -226,6 +242,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			//all tabs available
 			$tabs_arr = array(
 							'general_settings' => 'General Settings',
+							'licenses'	=> 'Licenses',
 							'support' => 'Support',
 							'hireus' => 'Services',
 							'pluginsthemes'	=> 'Plugins/Themes'				
@@ -238,6 +255,9 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 				case 'general_settings':
 					require_once THORHEARTBEAT_PLUGIN_PATH . '/app/views/settings.php';
 				break;
+				case 'licenses':
+					require_once THORHEARTBEAT_PLUGIN_PATH . '/app/views/licenses.php';
+					break;
 				case 'support':
 					require_once THORHEARTBEAT_PLUGIN_PATH . '/app/views/support.php';
 				break;
@@ -571,5 +591,189 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		}
 		// End of Standard Code Strings
 
+		function edd_thor_heartbeat_register_option() {
+			// creates our settings in the options table
+			register_setting('edd_thor_heartbeat_license', 'edd_thor_heartbeat_license_key', array($this, 'edd_thor_heartbeat_sanitize_license'));
+		}
+
+		function edd_thor_heartbeat_sanitize_license( $new ) {
+			$old = get_option( 'edd_thor_heartbeat_license_key' );
+			if( $old && $old != $new ) {
+				delete_option( 'edd_thor_heartbeat_license_status' ); 
+				// new license has been entered, so must reactivate
+			}
+			return $new;
+		}
+
+		/************************************
+		* this illustrates how to activate a license key
+		*************************************/
+
+		function edd_thor_heartbeat_activate_license() {
+
+			// listen for our activate button to be clicked
+			if( isset( $_POST['edd_thor_heartbeat_license_activate'] ) ) {
+
+				// run a quick security check
+			 	if( ! check_admin_referer( 'edd_thor_heartbeat_nonce', 'edd_thor_heartbeat_nonce' ) )
+					return; // get out if we didn't click the Activate button
+
+				// retrieve the license from the database
+				$license = trim( get_option( 'edd_thor_heartbeat_license_key' ) );
+
+
+				// data to send in our API request
+				$api_params = array(
+					'edd_action' => 'activate_license',
+					'license'    => $license,
+					'item_name'  => urlencode( THORHEARTBEAT_SL_ITEM_NAME ), // the name of our product in EDD
+					'url'        => home_url()
+				);
+
+				// Call the custom API.
+				$response = wp_remote_post( THORHEARTBEAT_SL_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+
+				// make sure the response came back okay
+				if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+
+					if ( is_wp_error( $response ) ) {
+						$message = $response->get_error_message();
+					} else {
+						$message = __( 'An error occurred, please try again.' );
+					}
+				} else {
+					$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+					if ( false === $license_data->success ) {
+						switch( $license_data->error ) {
+							case 'expired' :
+								$message = sprintf(
+									__( 'Your license key expired on %s.' ),
+									date_i18n( get_option( 'date_format' ), strtotime( $license_data->expires, current_time( 'timestamp' ) ) )
+								);
+								break;
+							case 'revoked' :
+								$message = __( 'Your license key has been disabled.' );
+								break;
+							case 'missing' :
+								$message = __( 'Invalid license.' );
+								break;
+							case 'invalid' :
+							case 'site_inactive' :
+								$message = __( 'Your license is not active for this URL.' );
+								break;
+							case 'item_name_mismatch' :
+								$message = sprintf( __( 'This appears to be an invalid license key for %s.' ), THORHEARTBEAT_SL_ITEM_NAME );
+								break;
+							case 'no_activations_left':
+								$message = __( 'Your license key has reached its activation limit.' );
+								break;
+							default :
+
+								$message = __( 'An error occurred, please try again.' );
+								break;
+						}
+					}
+				}
+
+				// Check if anything passed on a message constituting a failure
+				if ( ! empty( $message ) ) {
+					$base_url = admin_url( 'plugins.php?page=' . THORHEARTBEAT_PLUGIN_LICENSE_PAGE );
+					$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
+
+					wp_redirect( $redirect );
+					exit();
+				}
+
+				// $license_data->license will be either "valid" or "invalid"
+
+				update_option( 'edd_thor_heartbeat_license_status', $license_data->license );
+				wp_redirect( admin_url( 'plugins.php?page=' . THORHEARTBEAT_PLUGIN_LICENSE_PAGE ) );
+				exit();
+			}
+		}
+
+
+		/***********************************************
+		* Illustrates how to deactivate a license key.
+		* This will decrease the site count
+		***********************************************/
+
+		function edd_thor_heartbeat_deactivate_license() {
+
+			// listen for our activate button to be clicked
+			if( isset( $_POST['edd_license_deactivate'] ) ) {
+
+				// run a quick security check
+			 	if( ! check_admin_referer( 'edd_thor_heartbeat_nonce', 'edd_thor_heartbeat_nonce' ) )
+					return; // get out if we didn't click the Activate button
+
+				// retrieve the license from the database
+				$license = trim( get_option( 'edd_thor_heartbeat_license_key' ) );
+
+
+				// data to send in our API request
+				$api_params = array(
+					'edd_action' => 'deactivate_license',
+					'license'    => $license,
+					'item_name'  => urlencode( THORHEARTBEAT_SL_ITEM_NAME ), // the name of our product in EDD
+					'url'        => home_url()
+				);
+
+				// Call the custom API.
+				$response = wp_remote_post( THORHEARTBEAT_SL_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+
+				// make sure the response came back okay
+				if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+
+					if ( is_wp_error( $response ) ) {
+						$message = $response->get_error_message();
+					} else {
+						$message = __( 'An error occurred, please try again.' );
+					}
+
+					$base_url = admin_url( 'plugins.php?page=' . THORHEARTBEAT_PLUGIN_LICENSE_PAGE );
+					$redirect = add_query_arg( array( 'sl_activation' => 'false', 'message' => urlencode( $message ) ), $base_url );
+
+					wp_redirect( $redirect );
+					exit();
+				}
+
+				// decode the license data
+				$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+
+				// $license_data->license will be either "deactivated" or "failed"
+				if( $license_data->license == 'deactivated' ) {
+					delete_option( 'edd_thor_heartbeat_license_status' );
+				}
+
+				wp_redirect( admin_url( 'plugins.php?page=' . THORHEARTBEAT_PLUGIN_LICENSE_PAGE ) );
+				exit();
+			}
+		}
+		/**
+		 * This is a means of catching errors from the activation method above and displaying it to the customer
+		 */
+		public function edd_thor_heartbeat_admin_notices() {
+			if ( isset( $_GET['sl_activation'] ) && ! empty( $_GET['message'] ) ) {
+
+				switch( $_GET['sl_activation'] ) {
+
+					case 'false':
+						$message = urldecode( $_GET['message'] );
+						?>
+						<div class="error">
+							<p><?php echo $message; ?></p>
+						</div>
+						<?php
+						break;
+
+					case 'true':
+					default:
+						// Developers can put a custom success message here for when activation is successful if they way.
+						break;
+
+				}
+			}
+		}
   	} //end of class
 } //end of if class exists
