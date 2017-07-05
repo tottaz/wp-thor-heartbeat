@@ -19,12 +19,12 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			add_action('admin_init', array($this, 'thor_heartbeat_settings_init'));
 
 			// Software Licensing and Updates
-			add_action('admin_init', array($this, 'edd_thor_heartbeat_register_option'));
+			add_action('wp_thor_adminadmin_init', array($this, 'edd_thor_heartbeat_register_option'));
 
 			// Activate, check or deactivate Licenses
-			add_action('admin_init', array($this, 'edd_thor_heartbeat_activate_license'));
-			add_action('admin_init', array($this, 'edd_thor_heartbeat_deactivate_license'));
-			add_action( 'admin_notices', array($this, 'edd_thor_heartbeat_admin_notices'));
+			add_action('wp_thor_admin_init', array($this, 'edd_thor_heartbeat_activate_license'));
+			add_action('wp_thor_adminadmin_init', array($this, 'edd_thor_heartbeat_deactivate_license'));
+			add_action('admin_notices', array($this, 'edd_thor_heartbeat_admin_notices'));
 
 			add_action('wpmu_new_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6); 		
 			add_action('activate_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6);
@@ -64,12 +64,12 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			}
 
 			if ( is_numeric( $heartbeat_frequency ) ) {
-				function heartbeat_frequency( $settings ) {
+				function wp_thor_heartbeat_frequency( $settings ) {
 					global $heartbeat_frequency;
 					$settings['interval'] = $heartbeat_frequency;
 					return $settings;
 				}
-				add_filter( 'heartbeat_settings', 'heartbeat_frequency' );
+				add_filter( 'heartbeat_settings', 'wp_thor_heartbeat_frequency' );
 			}
 
 			add_filter('admin_footer_text', array($this, 'thor_heartbeat_admin_footer'));

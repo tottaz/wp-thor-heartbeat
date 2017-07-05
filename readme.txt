@@ -1,8 +1,8 @@
 Contributors: ThunderBear Design
 Tags: wordpress heartbeat
 Requires at least: 4.6
-Tested up to: 4.7
-Stable tag: 1.1
+Tested up to: 4.8
+Stable tag: 1.2
 License: GPLv2 or later
 
 == Description ==
@@ -44,3 +44,6 @@ This is first release.
 
 = 1.0 =
 * A intial version.
+
+= 1.1 =
+* Fixed issue with tag names not being unique
