@@ -1,9 +1,11 @@
+== Description ==
 Contributors: ThunderBear Design
-Tags: wordpress heartbeat
+Tags: wordpress heartbeat, heartbeat control, heartbeat api, performance
 Requires at least: 4.6
-Tested up to: 4.8
-Stable tag: 1.2
+Tested up to: 4.9.4
+Stable tag: 1.3
 License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 == Description ==
 
@@ -47,3 +49,9 @@ This is first release.
 
 = 1.1 =
 * Fixed issue with tag names not being unique
+
+= 1.2 =
+* Upgrade to WordPress 4.8.x
+
+= 1.2 =
+* Upgrade to WordPress 4.9.x

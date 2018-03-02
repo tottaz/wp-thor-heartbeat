@@ -24,7 +24,7 @@ if(!current_user_can('manage_options')) {
 					<h3 class="thor-h3">Themes</h3>
 						<h3>Here you find a list of Themes from ThunderBear Design Inc</h3>
 					<div class="inside">
-						<iframe src="https://thunderbeardesign.com/products/themes/" width="100%" height="1000px"></iframe>
+						<iframe src="https://thunderbeardesign.com/wordpress-themes/" width="100%" height="1000px"></iframe>
 					</div>
 				</div>
 			<?php break; ?>	
@@ -34,7 +34,7 @@ if(!current_user_can('manage_options')) {
 					<div class="inside">
 							<h3>Here you find a list plugins from ThunderBear Design Inc</h3>
 						<div class="inside">
-							<iframe src="https://thunderbeardesign.com/products/plugins/" width="100%" height="1000px"></iframe>
+							<iframe src="https://thunderbeardesign.com/wordpress-plugins/" width="100%" height="1000px"></iframe>
 						</div>
 						<div class="clear"></div>
 					</div>
