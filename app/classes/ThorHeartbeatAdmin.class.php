@@ -428,7 +428,7 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 						echo "<div class=\"social-links alignleft\"><i>Created by <a href=\"http://thunderbeardesign.com\" target=\"_blank\">ThunderBear Design</a></i>
 						<a href=\"http://twitter.com/tbearmarketing\" class=\"twitter\" target=\"_blank\"><span
 						class=\"dashicons dashicons-twitter\"></span></a>
-						<a href=\"fb.me/thunderbeardesign\" class=\"facebook\"
+						<a href=\"https://www.facebook.com/thunderbeardesign\" class=\"facebook\"
 				   target=\"_blank\"><span class=\"dashicons dashicons-facebook\"></span></a>
 						<a href=\"https://thunderbeardesign.com/feed/\" class=\"rss\" target=\"_blank\"><span
 						class=\"dashicons dashicons-rss\"></span></a>
