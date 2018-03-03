@@ -3,7 +3,7 @@
 * Plugin Name: WP Thor Heartbeat
 * Plugin URI: https://thunderbeardesign.com/downloads/wp-thor-heartbeat/
 * Description: Controls the WP heartbeat
-* Version: 1.7
+* Version: 1.4
 * Author: ThunderBear Design
 * Author URI: https://thunderbeardesign.com
 * License: GPL2
@@ -35,7 +35,7 @@ if( !class_exists( 'EDDEDDHEARTBEAT_SL_Plugin_Updater' ) ) {
 $license_key = trim( get_option( 'edd_thor_heartbeat_license_key' ) );
 // setup the updater
 $edd_updater = new EDDEDDHEARTBEAT_SL_Plugin_Updater( THORHEARTBEAT_SL_STORE_URL, __FILE__, array( 
-		'version' 	=> '1.7', 			// current version number
+		'version' 	=> '1.4', 			// current version number
 		'license' 	=> $license_key, 	// license key (used get_option above to retrieve from DB)
 		'item_name'	=> urlencode( THORHEARTBEAT_SL_ITEM_NAME ), 	// name of this plugin
 		'author' 	=> 'ThunderBear Design',  // author of this plugin

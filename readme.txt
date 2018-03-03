@@ -3,7 +3,7 @@ Contributors: ThunderBear Design
 Tags: wordpress heartbeat, heartbeat control, heartbeat api, performance
 Requires at least: 4.6
 Tested up to: 4.9.4
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Plugin URI: https://thunderbeardesign.com/downloads/wp-thor-heartbeat/
