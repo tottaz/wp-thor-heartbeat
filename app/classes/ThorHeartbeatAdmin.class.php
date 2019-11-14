@@ -19,11 +19,11 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 			add_action('admin_init', array($this, 'thor_heartbeat_settings_init'));
 
 			// Software Licensing and Updates
-			add_action('wp_thor_adminadmin_init', array($this, 'edd_thor_heartbeat_register_option'));
+			add_action('admin_init', array($this, 'edd_thor_heartbeat_register_option'));
 
 			// Activate, check or deactivate Licenses
-			add_action('wp_thor_admin_init', array($this, 'edd_thor_heartbeat_activate_license'));
-			add_action('wp_thor_adminadmin_init', array($this, 'edd_thor_heartbeat_deactivate_license'));
+			add_action('admin_init', array($this, 'edd_thor_heartbeat_activate_license'));
+			add_action('admin_init', array($this, 'edd_thor_heartbeat_deactivate_license'));
 			add_action('admin_notices', array($this, 'edd_thor_heartbeat_admin_notices'));
 
 			add_action('wpmu_new_blog',  array($this, 'thor_heartbeat_on_new_blog'), 10, 6); 		
@@ -200,14 +200,9 @@ if (!class_exists('ThorHeartbeatAdmin')) {
 		 *
 		 * @return void
 		 */	
-		public function thor_heartbeat_head(){
-
-				wp_enqueue_style( 'thor-heartbeat-admin-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/style.css' );
-				wp_enqueue_style( 'thor-heartbeat-font-awesome', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/font-awesome.css' );
-				wp_enqueue_style( 'thor-heartbeat-bootstrap-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/bootstrap.css' );
-				wp_enqueue_style( 'thor-heartbeat-bootstrap-theme-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/bootstrap-theme.css' );
-
-				wp_enqueue_script( 'thor-heartbeat-bootstrap-js', THORHEARTBEAT_PLUGIN_URL . '/app/views/js/bootstrap.js' );
+		public function thor_heartbeat_head() {
+				wp_enqueue_style( 'thor-heartbeat-admin-style', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/thor-heartbeat-style.css' );
+				wp_enqueue_style( 'thor-heartbeat-font-awesome', THORHEARTBEAT_PLUGIN_URL . '/app/views/css/thor-heartbeat-font-awesome.css' );
 		}
 
 		/**
